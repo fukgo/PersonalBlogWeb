@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset</title>
+</head>
+<body>
+    <p>你好 {{ user.username }},</p>
+    
+    <p>我们收到了您的密码重置请求。请点击下面的链接来重置您的密码：</p>
+    
+    <p><a href="{{ reset_url }}">重置密码</a></p>
+    
+    
+    <p>或复制此链接到浏览器打开：
+        {{reset_url}}
+        如果您没有请求密码重置，请忽略此邮件。</p>
+    
+    <p>谢谢！</p>
+</body>
+</html>

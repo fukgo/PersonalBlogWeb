@@ -1,0 +1,51 @@
+{% extends "base.html" %} {% load static %}
+{% block title %} 登录 {% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br>
+                <form method="post" action=".">
+                    {% csrf_token %}
+                    <!-- 账号 -->
+                    <div class="form-group">
+                        <label for="username">账号</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                    <!-- 密码 -->
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div><img src="{% url 'verification_code' %}" alt="验证码加载失败"></div>
+                    <div class="form-group">
+                        <label for="code">验证码</label>
+                        <input type="text" class="form-control" id="code" name="code">
+                    </div>
+
+                    <!-- 按钮 -->
+                    <button type="submit" class="btn btn-primary">登录</button>
+                </form>
+                    {% if form.errors %}
+<div class="alert alert-danger">
+    <ul>
+    {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <li><strong>{{ field }}:</strong> {{ error }}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}            </div>
+            <div class="col-12">
+                <br>
+                <h5>还没有账号？</h5>
+                <h5>点击<a href='{% url "register" %}'>注册账号</a>开始自己的博客</h5>
+                <br>
+                <br>
+                <h5>忘记密码了？</h5>
+                <h5>点击<a href='{% url "password_call" %}'>重置密码</a>使用你的邮箱来重置密码</h5>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filters_tags %}
+{% block title %}
+
+    文章详情
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+                <h1 class="mt-4 mb-4">{{ article.title }}</h1>
+                <div class="alert alert-success">
+                    作者：{{ article.author }}&nbsp;
+                    浏览：{{ article.total_views }}
+                    {% if user == article.author %}
+                        · <a href="#" onclick="confirm_delete()">删除文章</a>
+                        · <a href="{% url 'article_update' article.id %}">编辑文章</a>
+                    {% endif %}
+                </div>
+                <div class="col-12">
+                    <div>{{ article.content | safe }}</div>
+
+                </div>
+                <hr>
+                {% if user.is_authenticated %}
+                    <div>
+                        <form
+                                action="{% url 'post_comment' article.id %}"
+                                method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>
+                                    <strong>
+                                        我也要发言：
+                                    </strong>
+                                </label>
+                                <div>
+                                    {{ comment_form.media }}
+                                    {{ comment_form.content }}
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary ">发送</button>
+                        </form>
+                    </div>
+                    <br>
+                {% else %}
+                    <br>
+                    <h5 class="row justify-content-center">
+                        请<a href="{% url 'login' %}">登录</a>后回复
+                    </h5>
+                    <br>
+                {% endif %}
+
+
+
+                <!-- 显示评论 -->
+                {% load mptt_tags %}
+                <h4>共有{{ comments.count }}条评论</h4>
+                <div>
+                    {% for comment in comments %}
+                <hr>
+                    <strong style="color: pink">
+                    {{ comment.user }}</strong> 于
+                <span style="color: green">
+                    {{ comment.created|timesince_zh }}
+                </span> 时说：
+                        <div style="font-family: inherit; font-size: 1em; color: #ae81ff; margin-left: 20px;margin-top: 20px">{{ comment.content_md|safe }}</div>
+                    {% endfor %}
+                
+                </div>
+            </div>
+
+            <div id="sidebar" class="sidebar col-2 mt-4">
+                <div class="sidebar__inner">
+                    <h4><strong>目录</strong></h4>
+                    <hr>
+                    <div>
+                        {{ toc|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 粘性侧边栏样式 -->
+    <style>
+        .sidebar {
+            will-change: min-height;
+        }
+
+        .sidebar__inner {
+            transform: translate3d(0, 0, 0);
+            will-change: position, transform;
+        }
+    </style>
+
+    <script>
+        function confirm_delete() {
+            const deleteURL = "{% url 'article_delete' article.id %}";
+            const detailURL = "{% url 'article_detail' article.id %}";
+            layer.open({
+                title: '确认',
+                content: '确认删除该文章吗？',
+                btn: ['确定', '取消'], 
+                yes: function () {
+                    location.href = deleteURL
+                },
+                btn2: function () {
+                    location.href = detailURL
+
+                }
+            })
+
+        }
+
+    </script>
+    {% block script %}
+
+    {% endblock script %}
+
+{% endblock content %}

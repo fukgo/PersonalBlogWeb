@@ -1,0 +1,57 @@
+{% load static %}
+<html lang="zh-cn">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'layer-v3.5.1/layer/mobile/need/layer.css'%}">
+    <link rel="stylesheet" href="{% static 'layer-v3.5.1/layer/theme/default/layer.css'%}">
+    <link rel="stylesheet" href="{% static 'md_css/monokai.css' %}">
+
+    <style>
+        body {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+}
+
+    </style>
+</head>
+
+<body>
+    
+    {% include 'header.html' %}
+    <div id="wrapper">
+        {% block content %}{% endblock content %}
+        <div id="push"></div>
+    </div>
+    {% include 'footer.html' %}
+    <script src="{% static 'js/jquery-3.7.1.js' %}"></script>
+    {% include 'back_to_top_func.html' %}
+    {% block script %}{% endblock script %}
+    <script src="{% static 'layer-v3.5.1/layer/layer.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
+    <link 
+      rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/css/all.min.css">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        #wrapper {
+            min-height: 100%;
+            margin-bottom: -60px;
+        }
+
+        #footer,
+        #push {
+            height: 60px;
+        }
+    </style>
+</body>
+
+</html>
