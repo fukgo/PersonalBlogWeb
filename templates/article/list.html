@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filters_tags %}
+{% block title %}
+    首页
+{% endblock title %}
+
+{% block content %}
+
+
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                        <button type="button" class="btn btn-primary" onclick='window.location.href="{% url 'article_list' %}?search={{ search }}" '>最新</button>
+
+                </li>
+                <li class="breadcrumb-item">
+                    <button type="button" class="btn btn-danger" onclick='window.location.href="{% url 'article_list' %}?order=total_views&?search={{ search }}"'>最热</button>
+                </li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-auto mr-auto">
+                <form class="form-inline">
+                    <label class="sr-only">content</label>
+                    <input type="text"
+                           class="form-control mb-2 mr-sm-2"
+                           name="search"
+                           placeholder="搜索文章..."
+                           required>
+                </form>
+            </div>
+        </div>
+        {% if search %}
+            {% if articles %}
+                <h4><span style="color: red">"{{ search }}"</span>的搜索结果如下：</h4>
+                <hr>
+            {% else %}
+                <h4>暂无<span style="color: red">"{{ search }}"</span>有关的文章。</h4>
+                <hr>
+            {% endif %}
+        {% endif %}
+        <div class="row mt-2">
+            {% for article in articles %}
+                {% if article.avatar %}
+                    <div class="col-3">
+                        <img src="{{ article.avatar.url }}"
+                             alt="avatar"
+                             style="max-width:100%; border-radius: 20px"
+                        >
+                    </div>
+                {% endif %}
+                <div class="col-9">
+                    {% if article.column %}
+                        <button type="button"
+                                class="btn btn-sm mb-2
+                        {% if article.column.title == 'python' %}
+                            btn-danger
+                        {% elif article.column.title == 'python' %}
+                            btn-primary
+                        {% elif article.column.title == 'java' %}
+                            btn-warning
+                        {% else %}
+                            btn-info
+                        {% endif %}
+                    "
+                        >
+                            {{ article.column }}
+                        </button>
+                    {% endif %}
+                    <span>
+                        {% for tag in article.tags.all %}
+                            <a href="#"
+                               class="badge badge-secondary"
+                            >
+                                {{ tag }}
+                            </a>
+                        {% endfor %}
+                    </span>
+                    <h4>
+                        <b>
+                            <a href="{% url 'article_detail' article.id %}"
+                               style="color: black;"
+                            >
+                                {{ article.title }}
+                            </a>
+                        </b>
+                    </h4>
+                    <div>
+                        <p style="color: gray;">
+                            {{ article.content|slice:'100' }}...
+                        </p>
+                    </div>
+                    <p>
+                        <span>
+                    <i class="fas fa-eye" style="color: lightskyblue;"></i>
+                    {{ article.total_views }} 浏览&nbsp;&nbsp;&nbsp;
+                </span>
+                        <span>
+                    <i class="fas fa-comments" style="color: yellowgreen;"></i>    
+                    {{ article.create_time|timesince_zh }} 发布&nbsp;&nbsp;&nbsp;
+                </span>
+                        <span>
+                    <i class="fas fa-clock" style="color: pink;"></i>
+                    {{ article.update_time|timesince_zh }} 更新
+                </span>
+                    </p>
+                    <hr>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,12 @@
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/blog
+    ports:
+      - "8080:8000"
+
+

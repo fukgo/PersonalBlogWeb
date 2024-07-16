@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% load static %}
+{% block title %} 用户信息 {% endblock title %}
+{% block content %}
+<style>
+    .profile-container {
+        margin-top: 20px;
+    }
+    .profile-section {
+        margin-bottom: 20px;
+    }
+    .avatar-img {
+        max-width: 100%;
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+</style>
+<div class="container profile-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="row profile-section">
+                <div class="col-md-6">
+                    <h5>用户名: {{ user.username }}</h5>
+                </div>
+            </div>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row profile-section">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {% if profile.avatar %}
+                                <label class="form-label">头像:</label><br>
+                                <img src="{{ profile.avatar.url }}" class="avatar-img" alt="fail-to-load">
+                            {% else %}
+                                <label class="form-label">头像:</label><br>
+                                <h5>暂无头像</h5>
+                            {% endif %}
+                            <input type="file" class="form-control-file mt-2" name="avatar" id="avatar">
+                        </div>
+                    </div>
+                </div>
+                <div class="row profile-section">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="introduction" class="form-label">简介：</label>
+                            <textarea type="text" class="form-control" id="introduction" name="introduction" rows="5">{{ profile.introduction }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row profile-section">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="gender" class="form-label">性别：</label>
+                            <select class="form-control" id="gender" name="gender">
+                                <option value=1 {% if profile.gender == 1 %}selected{% endif %}>男</option>
+                                <option value=0 {% if profile.gender == 0 %}selected{% endif %}>女</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row profile-section">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="birth_date" class="form-label">生日：</label>
+                            {% if profile.birth_date %}
+                                <span>{{ profile.birth_date }}</span>
+                            {% else %}
+                                <span>未设置</span>
+                            {% endif %}
+                            <input type="date" class="form-control mt-2" id="birth_date" name="birth_date">
+                        </div>
+                    </div>
+                </div>
+                {% if form.errors %}
+<div class="alert alert-danger">
+    <ul>
+    {% for field, errors in form.errors.items %}
+        {% for error in errors %}
+        <li><strong>{{ field }}:</strong> {{ error }}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+                <div class="row profile-section">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

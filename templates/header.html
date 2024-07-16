@@ -1,0 +1,120 @@
+{% load static %}
+    <script>
+        function CreateColumn() {
+        var title = prompt("请输入新栏目的标题:");
+        if (title != null) {
+        $.ajax({
+        url: "{% url 'add_column' %}",
+        type: 'POST',
+        data: JSON.stringify({'title': title}),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function(response) {
+        alert("新栏目创建成功！");
+    },
+        error: function(response) {
+        alert("新栏目创建失败：" + response.responseJSON.error);
+    }
+    });
+    }
+    }
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+
+        <a class="navbar-brand" href="{% url 'article_list' %}">我的博客</a>
+
+        <div>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" onclick="CreateColumn()">创建新栏目</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'article_list' %}">文章</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="{% url 'article_create' %}">写文章</a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#" onclick="user_logout()">退出登录</a>
+                            <a class="dropdown-item" href="#" onclick="user_delete()">删除用户</a>
+                            <a class="dropdown-item" href='{% url "profile_edit" user.id %}'>个人信息</a>
+                        </div>
+
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">注册</a>
+                    </li>
+                {% endif %}
+            </ul>
+
+        </div>
+
+    </div>
+</nav>
+{% if user.is_authenticated %}
+    <form
+            style="display:none;"
+            id="user_delete"
+            action="{% url 'delete' user.id %}"
+            method="POST"
+    >
+        {% csrf_token %}
+        <button type="submit">发送</button>
+    </form>
+    <script>
+        function user_delete() {
+            layer.open({
+                title: '确认',
+                content: '确认删除用户资料吗？',
+                btn: ['确定', '取消'],
+                yes: function (index) {
+                    //当用户点击确定按钮时，会模拟表单提交
+                    $('form#user_delete button').click();
+                    layer.close(index);
+                },
+                btn2: function (index) {
+                    layer.close(index);
+
+                }
+            })
+        }
+            function user_logout() {
+        const logout_url = "{% url 'logout' %}";
+        const current_url = window.location.href;
+
+        layer.open({
+            title: '确认',
+            content: '确认退出登录吗？',
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                fetch(logout_url, {
+                    method: 'GET'
+                }).then(response => {
+                    window.location.href = current_url;
+                });
+                layer.close(index);
+            },
+            btn2: function (index) {
+                layer.close(index);
+            }
+        });
+    }
+        
+    </script>
+    {% csrf_token %}
+{% endif %}
+
